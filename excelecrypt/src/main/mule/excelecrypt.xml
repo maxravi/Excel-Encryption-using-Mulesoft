@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:validation="http://www.mulesoft.org/schema/mule/validation" xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc"
+	xmlns:ftp="http://www.mulesoft.org/schema/mule/ftp"
+	xmlns:microsoftOneDrive="http://www.mulesoft.org/schema/mule/microsoftOneDrive" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:sftp="http://www.mulesoft.org/schema/mule/sftp" xmlns:java="http://www.mulesoft.org/schema/mule/java" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/java/current/mule-java.xsd
+http://www.mulesoft.org/schema/mule/sftp http://www.mulesoft.org/schema/mule/sftp/current/mule-sftp.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/microsoftOneDrive http://www.mulesoft.org/schema/mule/microsoftOneDrive/current/mule-microsoftOneDrive.xsd
+http://www.mulesoft.org/schema/mule/ftp http://www.mulesoft.org/schema/mule/ftp/current/mule-ftp.xsd
+http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="5325e780-74c8-483b-ac2f-1a5b3ddb1027" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<file:config name="File_Config" doc:name="File Config" doc:id="271a26aa-9c33-4c94-9588-4f4d16708fa6" />
+	<file:config name="File_Config1" doc:name="File Config" doc:id="ec22b1c8-b71a-4029-8523-d70826015039" />
+	<ftp:config name="FTP_Config" doc:name="FTP Config" doc:id="ae7492ac-d1fb-49b9-b0d0-52350384c05b" >
+		<ftp:connection workingDir="/tmp" host="files.000webhost.com" username="wertyuioooooooooooooo" password="Shaurya2022#" connectionTimeout="60" responseTimeout="60"/>
+	</ftp:config>
+	<validation:config name="Validation_Config" doc:name="Validation Config" doc:id="cd939416-4dc8-4cb5-ac6e-a589b9aa05c1" />
+	<flow name="excelecryptFlow" doc:id="5678bc4a-bf38-4a9d-a9ce-1f43b5914af4" >
+		<scheduler doc:name="Scheduler" doc:id="4e1d2116-efac-403e-ba29-5047bea218e4" >
+			<scheduling-strategy >
+				<fixed-frequency timeUnit="HOURS"/>
+			</scheduling-strategy>
+		</scheduler>
+		<java:invoke-static doc:name="Invoke static" doc:id="58029042-fb1c-4e44-bbdf-76ad60130d7d" class="testexcelpassword.encrypt2" method="add(java.lang.String,java.lang.String)" outputMimeType="application/xlsx" target="test">
+			<java:args ><![CDATA[#[{
+	arg0: "1",
+	arg1: "2"
+}]]]></java:args>
+		</java:invoke-static>
+		<logger level="INFO" doc:name="Logger" doc:id="7a238329-8904-42a2-9588-e735b959bd76" message="done"/>
+		<file:write doc:name="Write" doc:id="7a62b5ee-3122-4ee9-a2c5-44255f1ce6eb" config-ref="File_Config1" path="/tmp/protected-2.xlsx">
+			<file:content ><![CDATA[#[vars.test]]]></file:content>
+		</file:write>
+		<logger level="INFO" doc:name="Logger" doc:id="c2ca6304-a8f3-4a8b-9a14-84d9358cdfad" message="File writing completed"/>
+		<logger level="INFO" doc:name="Logger" doc:id="09b66b77-6769-44e0-a217-1a584ff01c73" message="local file removed"/>
+	</flow>
+</mule>
